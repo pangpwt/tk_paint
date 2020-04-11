@@ -1,13 +1,17 @@
 from tkinter import *
 from tkinter import ttk
 from tkmacosx import Button
+from tkinter.colorchooser import askcolor
 
 
-last_x = 0
-last_y = 0
+lastx = 0
+lasty = 0
 color = "Black"
 tool = "Pencil"
 pencil_size = 2
+oval = None
+shape_outlint = 1
+
 
 def xy(event):
     global lastx, lasty
@@ -20,12 +24,35 @@ def pencil_draw(event):
 
 def brush_draw(event):
     global lastx, lasty
-    canvas.create_line((lastx, lasty, event.x, event.y), fill=color, width = pencil_size, capstyle = PROJECTING)
+    canvas.create_line((lastx, lasty, event.x, event.y), fill=color, width = pencil_size, capstyle = PROJECTING, dash=(3,5))
+    lastx, lasty = event.x, event.y
+
+def show_oval(event):
+    global lastx, lasty, oval
+    if oval:
+        canvas.delete(oval)
+    oval = canvas.create_oval((lastx, lasty, event.x, event.y), fill = color, width = shape_outlint)
+
+def oval_draw(event):
+    global oval
+    if oval:
+        canvas.delete(oval)
+    oval = None
+    canvas.create_oval((lastx, lasty, event.x, event.y), fill=color, width = shape_outlint)
+
+def erase(event):
+    global lastx, lasty
+    canvas.create_line((lastx, lasty, event.x, event.y), fill="White", width = pencil_size, capstyle = ROUND, smooth = TRUE)
     lastx, lasty = event.x, event.y
 
 def change_size(s):
     global pencil_size 
     pencil_size = s
+
+def choose_other_color():
+    global color
+    color = askcolor(color = color)[1]
+    btn_c_other.configure(fg = color)
 
 def change_tool(tool):
     if tool == 'pencil':
@@ -34,6 +61,13 @@ def change_tool(tool):
     elif tool == 'brush':
         canvas.bind("<Button-1>", xy)
         canvas.bind("<B1-Motion>", brush_draw)
+    elif tool == 'eraser':
+        canvas.bind("<Button-1>", xy)
+        canvas.bind("<B1-Motion>", erase)
+    elif tool == 'circle':
+        canvas.bind("<B1-Motion>", show_oval)
+        canvas.bind("<ButtonPress-1>", xy)
+        canvas.bind("<ButtonRelease-1>", oval_draw)
 
 
 root = Tk()
@@ -74,7 +108,7 @@ btn_brush = Button(frame1, text = 'Brush', width = 100, height = 30, font = ("He
 btn_brush.grid(row = 2, columnspan = 3, padx = 4, pady = 2, sticky = "NEWS")
 
 ## ROW 3
-btn_circle = Button(frame1, text = '〇', width = 30, height = 30, font = ("Helvetica", 14))
+btn_circle = Button(frame1, text = '〇', width = 30, height = 30, font = ("Helvetica", 14), command = lambda: change_tool('circle'))
 btn_circle.grid(row = 3, column = 0, padx = 1, pady = 2, sticky = "E")
 btn_rectangle = Button(frame1, text = '▢', width = 30, height = 30, font = ("Helvetica", 14))
 btn_rectangle.grid(row = 3, column = 1, padx = 1, pady = 2, sticky = "NEWS")
@@ -82,11 +116,11 @@ btn_triangle = Button(frame1, text = '△', width = 30, height = 30, font = ("He
 btn_triangle.grid(row = 3, column = 2, padx = 1, pady = 2, sticky = "W")
 
 ## ROW 4
-btn_erase = Button(frame1, text = 'Eraser', width = 100, height = 30, font = ("Helvetica", 14))
+btn_erase = Button(frame1, text = 'Eraser', width = 100, height = 30, font = ("Helvetica", 14), command = lambda: change_tool('eraser'))
 btn_erase.grid(row = 4, columnspan = 3, pady = 2, padx = 4, sticky = "NEWS")
 
 ## ROW 5
-label_tools = Label(frame1, text = 'Size', font = ("Helvetica", 14), bg = color_frame_left)
+label_tools = Label(frame1, text = 'Line size', font = ("Helvetica", 14), bg = color_frame_left)
 label_tools.grid(row = 5, columnspan = 3, pady = 2, sticky = "NSEW")
 
 ## ROW 6
@@ -98,12 +132,12 @@ btn_size_3 = btn_circle = Button(frame1, text = '●', width = 30, height = 30, 
 btn_size_3.grid(row = 6, column = 2, padx = 1, pady = 2, sticky = "W")
 
 ## ROW 7
-label_tools = Label(frame1, text = 'Transparent', font = ("Helvetica", 14), bg = color_frame_left)
+label_tools = Label(frame1, text = 'Shape outline', font = ("Helvetica", 14), bg = color_frame_left)
 label_tools.grid(row = 7, columnspan = 3, pady = 2, sticky = "NSEW")
 
 ## ROW 8
-scale_transparen = Scale(frame1, from_=0, to=10, orient=HORIZONTAL, bg = "Gray", showvalue = 0, state = DISABLED ,takefocus = 0)
-scale_transparen.grid(row = 8, columnspan = 3, padx = 4, sticky = "NSEW")
+scale_outline = Scale(frame1, from_=0, to=10, orient=HORIZONTAL, bg = "sky blue", showvalue = 0 ,takefocus = 0)
+scale_outline.grid(row = 8, columnspan = 3, padx = 4, sticky = "NSEW")
 
 # COLORS
 
@@ -154,7 +188,7 @@ btn_c_pink.grid(row = 14, column = 2, padx = 1, pady = 2, sticky = "W")
 ## ROW 15
 label_tools = Label(frame1, text = 'other', font = ("Helvetica", 12), bg = color_frame_left)
 label_tools.grid(row = 15, column = 0, pady = 2, sticky = "NSEW")
-btn_c_other = Button(frame1, text = '●', width = 62, height = 30, font = ("Helvetica", 30), bg = color_c_button_bg, fg = "Black")
+btn_c_other = Button(frame1, text = '●', width = 62, height = 30, font = ("Helvetica", 30), bg = color_c_button_bg, fg = "Black", command = choose_other_color)
 btn_c_other.grid(row = 15, column = 1, columnspan = 2, padx = 4, pady = 2, sticky = "WE")
 
 
