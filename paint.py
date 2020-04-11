@@ -2,6 +2,40 @@ from tkinter import *
 from tkinter import ttk
 from tkmacosx import Button
 
+
+last_x = 0
+last_y = 0
+color = "Black"
+tool = "Pencil"
+pencil_size = 2
+
+def xy(event):
+    global lastx, lasty
+    lastx, lasty = event.x, event.y
+
+def pencil_draw(event):
+    global lastx, lasty
+    canvas.create_line((lastx, lasty, event.x, event.y), fill=color, width = pencil_size, capstyle = ROUND)
+    lastx, lasty = event.x, event.y
+
+def brush_draw(event):
+    global lastx, lasty
+    canvas.create_line((lastx, lasty, event.x, event.y), fill=color, width = pencil_size, capstyle = PROJECTING)
+    lastx, lasty = event.x, event.y
+
+def change_size(s):
+    global pencil_size 
+    pencil_size = s
+
+def change_tool(tool):
+    if tool == 'pencil':
+        canvas.bind("<Button-1>", xy)
+        canvas.bind("<B1-Motion>", pencil_draw)
+    elif tool == 'brush':
+        canvas.bind("<Button-1>", xy)
+        canvas.bind("<B1-Motion>", brush_draw)
+
+
 root = Tk()
 
 root.geometry('800x600')
@@ -16,9 +50,14 @@ root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
 
 frame1 = Frame(root, width = 100, height = 600, background = color_frame_left)
-frame2 = Frame(root, width = 680, heigh = 580, background = color_paper, highlightbackground = "gray", highlightthickness = 1)
 frame1.grid(row = 0, column = 0, sticky="NSEW")
-frame2.grid(row = 0, column = 1, padx = 5, pady = 5, sticky="NSEW")
+
+canvas = Canvas(root, width = 680, heigh = 580, background = color_paper, highlightbackground = "gray", highlightthickness = 1)
+canvas.grid(row = 0, column = 1, padx = 5, pady = 5, sticky="NSEW")
+
+canvas.bind("<Button-1>", xy)
+canvas.bind("<B1-Motion>", pencil_draw)
+
 
 # TOOLS
 
@@ -27,11 +66,11 @@ label_tools = Label(frame1, text = 'Tools', font = ("Helvetica", 14), bg = color
 label_tools.grid(row = 0, columnspan = 3, pady = 2, sticky = "NSEW")
 
 ## ROW 1
-btn_pencil = Button(frame1, text = 'Pencil',  width = 100, height = 30, font = ("Helvetica", 14))
+btn_pencil = Button(frame1, text = 'Pencil',  width = 100, height = 30, font = ("Helvetica", 14), command = lambda: change_tool('pencil'))
 btn_pencil.grid(row = 1, columnspan = 3, padx = 4, pady = 2, sticky = "NEWS")
 
 ## ROW 2
-btn_brush = Button(frame1, text = 'Brush', width = 100, height = 30, font = ("Helvetica", 14))
+btn_brush = Button(frame1, text = 'Brush', width = 100, height = 30, font = ("Helvetica", 14), command = lambda: change_tool('brush'))
 btn_brush.grid(row = 2, columnspan = 3, padx = 4, pady = 2, sticky = "NEWS")
 
 ## ROW 3
@@ -51,11 +90,11 @@ label_tools = Label(frame1, text = 'Size', font = ("Helvetica", 14), bg = color_
 label_tools.grid(row = 5, columnspan = 3, pady = 2, sticky = "NSEW")
 
 ## ROW 6
-btn_size_1 = btn_circle = Button(frame1, text = '●', width = 30, height = 30, font = ("Helvetica", 10))
+btn_size_1 = btn_circle = Button(frame1, text = '●', width = 30, height = 30, font = ("Helvetica", 10), command = lambda: change_size(2))
 btn_size_1.grid(row = 6, column = 0, padx = 1, pady = 2, sticky = "E")
-btn_size_2 = btn_circle = Button(frame1, text = '●', width = 30, height = 30, font = ("Helvetica", 16))
+btn_size_2 = btn_circle = Button(frame1, text = '●', width = 30, height = 30, font = ("Helvetica", 16), command = lambda: change_size(5))
 btn_size_2.grid(row = 6, column = 1, padx = 1, pady = 2, sticky = "NEWS")
-btn_size_3 = btn_circle = Button(frame1, text = '●', width = 30, height = 30, font = ("Helvetica", 24))
+btn_size_3 = btn_circle = Button(frame1, text = '●', width = 30, height = 30, font = ("Helvetica", 24), command = lambda: change_size(10))
 btn_size_3.grid(row = 6, column = 2, padx = 1, pady = 2, sticky = "W")
 
 ## ROW 7
@@ -63,7 +102,7 @@ label_tools = Label(frame1, text = 'Transparent', font = ("Helvetica", 14), bg =
 label_tools.grid(row = 7, columnspan = 3, pady = 2, sticky = "NSEW")
 
 ## ROW 8
-scale_transparen = Scale(frame1, from_=0, to=10, orient=HORIZONTAL, bg = color_frame_left, showvalue = 0)
+scale_transparen = Scale(frame1, from_=0, to=10, orient=HORIZONTAL, bg = "Gray", showvalue = 0, state = DISABLED ,takefocus = 0)
 scale_transparen.grid(row = 8, columnspan = 3, padx = 4, sticky = "NSEW")
 
 # COLORS
