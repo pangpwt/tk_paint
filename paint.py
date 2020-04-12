@@ -42,6 +42,7 @@ def clear_all():
     global tool
     canvas.delete("all")
     change_tool("pencil")
+    canvas.configure(cursor = 'pencil')
 
 def pencil_draw(event):
     global lastx, lasty
@@ -130,42 +131,49 @@ def do_nothing(event):
 
 def change_tool(tool):
     if tool == 'pencil':
+        canvas.configure(cursor = 'pencil')
         canvas.bind("<Button-1>", xy)
         canvas.bind("<B1-Motion>", pencil_draw)
         canvas.bind("<ButtonPress-1>", xy)
         canvas.bind("<ButtonRelease-1>", pencil_draw)
         canvas.bind('<Double-Button-1>', do_nothing)
     elif tool == 'brush':
+        canvas.configure(cursor = 'dot')
         canvas.bind("<Button-1>", xy)
         canvas.bind("<B1-Motion>", brush_draw)
         canvas.bind("<ButtonPress-1>", xy)
         canvas.bind("<ButtonRelease-1>", brush_draw)
         canvas.bind('<Double-Button-1>', do_nothing)
     elif tool == 'eraser':
+        canvas.configure(cursor = 'circle')
         canvas.bind("<Button-1>", xy)
         canvas.bind("<B1-Motion>", erase)
         canvas.bind("<ButtonPress-1>", xy)
         canvas.bind("<ButtonRelease-1>", erase)
         canvas.bind('<Double-Button-1>', do_nothing)
     elif tool == 'circle':
+        canvas.configure(cursor = 'tcross')
         canvas.bind("<Button-1>", do_nothing)
         canvas.bind("<B1-Motion>", show_oval)
         canvas.bind("<ButtonPress-1>", xy)
         canvas.bind("<ButtonRelease-1>", oval_draw)
         canvas.bind('<Double-Button-1>', do_nothing)
     elif tool == 'rectangle':
+        canvas.configure(cursor = 'tcross')
         canvas.bind("<Button-1>", do_nothing)
         canvas.bind("<B1-Motion>", show_rectangle)
         canvas.bind("<ButtonPress-1>", xy)
         canvas.bind("<ButtonRelease-1>", rectangle_draw)
         canvas.bind('<Double-Button-1>', do_nothing)
     elif tool == 'polygon':
+        canvas.configure(cursor = 'target')
         canvas.bind("<Button-1>", do_nothing)
         canvas.bind("<B1-Motion>", do_nothing)
         canvas.bind("<ButtonPress-1>", get_points)
         canvas.bind("<ButtonRelease-1>", do_nothing)
         canvas.bind('<Double-Button-1>', draw_polygon)
     elif tool == 'text':
+        canvas.configure(cursor = 'xterm')
         canvas.bind("<Button-1>", insert_text)
         canvas.bind("<B1-Motion>", do_nothing)
         canvas.bind("<ButtonRelease-1>", do_nothing)
