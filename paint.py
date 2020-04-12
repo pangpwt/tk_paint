@@ -5,13 +5,13 @@ from tkinter.colorchooser import askcolor
 
 
 class TextDialog:
-
     def __init__(self, parent):
         top = self.top = Toplevel(parent)
         self.myEntryBox = Entry(top)
         self.myEntryBox.pack()
         self.mySubmitButton = Button(top, text='OK', command=self.send)
         self.mySubmitButton.pack()
+        
 
     def send(self):
         self.text = self.myEntryBox.get()
@@ -29,6 +29,8 @@ shape_outline = 1
 list_points = []
 tmp_line = []
 tmp_regtangle = []
+
+
 
 
 def xy(event):
@@ -115,9 +117,9 @@ def change_color(c):
     color = c
 
 def insert_text(event):
-    input_dialog = TextDialog(canvas)
-    canvas.wait_window(input_dialog.top)
-    print(input_dialog.text)
+    input_dialog = TextDialog(root)
+    root.wait_window(input_dialog.top)
+    # print(input_dialog.text)
     canvas.create_text(event.x, event.y, text = input_dialog.text, fill = color, font = ('Helvetica', 20))
 
 def do_nothing(event):
@@ -296,5 +298,6 @@ btn_c_other.grid(row = 16, column = 1, columnspan = 2, padx = 4, pady = 2, stick
 ## ROW 17
 btn_clear = Button(frame1, text = 'Clear all',  width = 100, height = 30, font = ("Helvetica", 14), bg = '#EA6653', fg = "White", command = clear_all)
 btn_clear.grid(row = 17, columnspan = 3, padx = 4, pady = 20, sticky = "NEWS")
+
 
 root.mainloop()
