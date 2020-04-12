@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkmacosx import Button
 from tkinter.colorchooser import askcolor
+from PIL import Image, ImageTk
 
 
 class TextDialog:
@@ -38,7 +39,9 @@ def xy(event):
     lastx, lasty = event.x, event.y
 
 def clear_all():
+    global tool
     canvas.delete("all")
+    change_tool("pencil")
 
 def pencil_draw(event):
     global lastx, lasty
@@ -47,7 +50,7 @@ def pencil_draw(event):
 
 def brush_draw(event):
     global lastx, lasty
-    canvas.create_line((lastx, lasty, event.x, event.y), fill=color, width = pencil_size, capstyle = PROJECTING)
+    canvas.create_line((lastx, lasty, event.x, event.y), fill=color, width = pencil_size * 3, capstyle = PROJECTING)
     lastx, lasty = event.x, event.y
 
 def show_oval(event):
@@ -170,7 +173,7 @@ def change_tool(tool):
 
 root = Tk()
 
-root.geometry('800x600')
+root.geometry('800x650')
 root.title('Pawitra Paint')
 root.configure(background = '#DBDBDB')
 
@@ -199,11 +202,13 @@ label_tools = Label(frame1, text = 'Tools', font = ("Helvetica", 14), bg = color
 label_tools.grid(row = 0, columnspan = 3, pady = 2, sticky = "NSEW")
 
 ## ROW 1
-btn_pencil = Button(frame1, text = 'Pencil',  width = 100, height = 30, font = ("Helvetica", 14), bg = color_t_button_bg, command = lambda: change_tool('pencil'))
+img_pencil = ImageTk.PhotoImage(Image.open('pencil.png').resize((30, 30), Image.ANTIALIAS))
+btn_pencil = Button(frame1, image = img_pencil,  width = 100, height = 40, font = ("Helvetica", 14), bg = color_t_button_bg, command = lambda: change_tool('pencil'))
 btn_pencil.grid(row = 1, columnspan = 3, padx = 4, pady = 2, sticky = "NEWS")
 
 ## ROW 2
-btn_brush = Button(frame1, text = 'Brush', width = 100, height = 30, font = ("Helvetica", 14), bg = color_t_button_bg, command = lambda: change_tool('brush'))
+img_brush = ImageTk.PhotoImage(Image.open('brush.png').resize((30, 30), Image.ANTIALIAS))
+btn_brush = Button(frame1, image = img_brush, width = 100, height = 40, font = ("Helvetica", 14), bg = color_t_button_bg, command = lambda: change_tool('brush'))
 btn_brush.grid(row = 2, columnspan = 3, padx = 4, pady = 2, sticky = "NEWS")
 
 ## ROW 3
@@ -215,11 +220,12 @@ btn_polygon = Button(frame1, text = '⬠', width = 30, height = 30, font = ("Hel
 btn_polygon.grid(row = 3, column = 2, padx = 1, pady = 2, sticky = "W")
 
 ## ROW 4
-btn_text = Button(frame1, text = 'Text', width = 100, height = 30, font = ("Helvetica", 14), bg = color_t_button_bg, command = lambda: change_tool('text'))
+btn_text = Button(frame1, text = 'Text', width = 100, height = 40, font = ("Helvetica", 16), bg = color_t_button_bg, command = lambda: change_tool('text'))
 btn_text.grid(row = 4, columnspan = 3, pady = 2, padx = 4, sticky = "NEWS")
 
 ## ROW 5
-btn_erase = Button(frame1, text = 'Eraser', width = 100, height = 30, font = ("Helvetica", 14), bg = color_t_button_bg, command = lambda: change_tool('eraser'))
+img_eraser = ImageTk.PhotoImage(Image.open('eraser.png').resize((30, 30), Image.ANTIALIAS))
+btn_erase = Button(frame1, image = img_eraser, width = 100, height = 40, font = ("Helvetica", 14), bg = color_t_button_bg, command = lambda: change_tool('eraser'))
 btn_erase.grid(row = 5, columnspan = 3, pady = 2, padx = 4, sticky = "NEWS")
 
 ## ROW 6
@@ -296,7 +302,8 @@ btn_c_other.grid(row = 16, column = 1, columnspan = 2, padx = 4, pady = 2, stick
 
 
 ## ROW 17
-btn_clear = Button(frame1, text = 'Clear all',  width = 100, height = 30, font = ("Helvetica", 14), bg = '#EA6653', fg = "White", command = clear_all)
+img_trash = ImageTk.PhotoImage(Image.open('trash.png').resize((30, 30), Image.ANTIALIAS))
+btn_clear = Button(frame1, image = img_trash,  width = 100, height = 40, font = ("Helvetica", 14), bg = '#FAE2E2', fg = "White", command = clear_all)
 btn_clear.grid(row = 17, columnspan = 3, padx = 4, pady = 20, sticky = "NEWS")
 
 
